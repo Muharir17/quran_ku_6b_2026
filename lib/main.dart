@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quran_ku/providers/surah_provider.dart';
+import 'package:quran_ku/screens/detail_surah_screen.dart';
+import 'package:quran_ku/screens/list_surah_screen.dart';
 
 
 void main() {
