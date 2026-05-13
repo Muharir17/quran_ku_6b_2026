@@ -1,29 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:quran_ku/providers/surah_provider.dart';
 
 
 void main() {
-  runApp(const MyApp());
+  runApp(const QuranApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class QuranApp extends StatelessWidget {
+  const QuranApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Quran Ku',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      debugShowCheckedModeBanner: true,
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Quran Ku'),
+    return ChangeNotifierProvider(
+      create: (context) => SurahProvider()..fetchSurahList(),
+      child: MaterialApp(
+        title: 'Quran App',
+        theme: ThemeData(
+          primarySwatch: Colors.green,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        body: Center(
-          child: Text('Quran Ku - Cooming Soon'),
-        ),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const ListSurahScreen(),
+          '/surah-detail': (context) {
+            final surahNumber = ModalRoute.of(context)!.settings.arguments as int;
+            return DetailSurahScreen(surahNumber: surahNumber);
+          },
+        },
+        debugShowCheckedModeBanner: false,
       ),
     );
   }
