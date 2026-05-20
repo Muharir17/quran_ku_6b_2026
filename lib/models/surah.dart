@@ -31,7 +31,7 @@ class Surah {
       tempatTurun: json['tempatTurun'] as String? ?? '',
       arti: json['arti'] as String? ?? '',
       deskripsi: json['deskripsi'] as String? ?? '',
-      audioFull: (json['audioFull'] as Map<String, dynamic>?)?.map((key, value) => MapEntry(key, value.toString()))?.cast<String, String>() ?? {},
+      audioFull: (json['audioFull'] as Map<String, dynamic>? ?? {}).map((key, value) => MapEntry(key, value.toString())),
     );
   }
 

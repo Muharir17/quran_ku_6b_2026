@@ -27,7 +27,7 @@ class DetailedSurah extends Surah{
       tempatTurun: json['tempatTurun'],
       arti: json['arti'],
       deskripsi: json['deskripsi'],
-      audioFull: json['audioFull'],
+      audioFull: (json['audioFull'] as Map<String, dynamic>? ?? {}).map((key, value) => MapEntry(key, value.toString())),
       ayat: (json['ayat'] as List<dynamic>?)
           ?.map((ayah) => Ayah.fromJson(ayah as Map<String, dynamic>))
           .toList() ?? [],
