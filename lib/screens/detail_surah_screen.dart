@@ -1,20 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:audioplayers/audioplayers.dart';
 import '../providers/providers.dart';
 
-class DetailSurahScreen extends StatelessWidget {
+class DetailSurahScreen extends StatefulWidget {
   final int surahNumber;
 
   const DetailSurahScreen({super.key, required this.surahNumber});
 
   @override
-  Widget build(BuildContext context) {
-    // Fetch the surah detail when the screen is built
+  State<DetailSurahScreen> createState() => _DetailSurahScreenState();
+}
+
+class _DetailSurahScreenState extends State<DetailSurahScreen> {
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  String? _currentPlayingUrl;
+  bool _isPlaying = false;
+
+  @override
+  void initState() {
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<SurahProvider>(context, listen: false)
-          .fetchSurahDetail(surahNumber);
+          .fetchSurahDetail(widget.surahNumber);
     });
+    _audioPlayer.onPlayerStateChanged.listen((state) {
+      setState(() {
+        _isPlaying = state == PlayerState.playing;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
+  }
+
+  Future<void> _playAudio(String url) async {
+    if (_currentPlayingUrl == url && _isPlaying) {
+      await _audioPlayer.pause();
+    } else if (_currentPlayingUrl == url && !_isPlaying) {
+      await _audioPlayer.resume();
+    } else {
+      await _audioPlayer.stop();
+      setState(() => _currentPlayingUrl = url);
+      await _audioPlayer.play(UrlSource(url));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final surahNumber = widget.surahNumber;
 
     return Scaffold(
       appBar: AppBar(
@@ -148,10 +186,15 @@ class DetailSurahScreen extends StatelessWidget {
                             Row(
                               children: [
                                 IconButton(
-                                  icon: const Icon(Icons.play_circle_outline, color: Colors.green),
+                                  icon: Icon(
+                                    _currentPlayingUrl == surah.audioFull['01'] && _isPlaying
+                                        ? Icons.pause_circle_outline
+                                        : Icons.play_circle_outline,
+                                    color: Colors.green,
+                                  ),
                                   onPressed: () {
-                                    //TODO: Implement surah audio playback
-                                    print('Playing surah audio: ${surah.audioFull['01']}');
+                                    final url = surah.audioFull['01'];
+                                    if (url != null) _playAudio(url);
                                   },
                                 ),
                                 const Text(
@@ -280,11 +323,14 @@ class DetailSurahScreen extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   IconButton(
-                                    icon: const Icon(Icons.play_circle_outline),
+                                    icon: Icon(
+                                      _currentPlayingUrl == ayah.audio['01'] && _isPlaying
+                                          ? Icons.pause_circle_outline
+                                          : Icons.play_circle_outline,
+                                    ),
                                     onPressed: () {
-                                      //TODO: Implement audio playback
-                                      // For now, we'll just print the audio URL
-                                      print('Playing audio: ${ayah.audio['01']}');
+                                      final url = ayah.audio['01'];
+                                      if (url != null) _playAudio(url);
                                     },
                                   ),
                                   const Text(

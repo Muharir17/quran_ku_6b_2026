@@ -22,6 +22,9 @@ dependencies:
   # HTML Rendering untuk deskripsi surah
   flutter_html: ^3.0.0-beta.2
 
+  # Audio player
+  audioplayers: ^6.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
