@@ -16,24 +16,17 @@ class ListSurahScreen extends StatelessWidget {
         foregroundColor: Colors.white,
       ),
       body: Consumer<SurahProvider>(
-        builder: (context, provider, child){
-
-          if(provider.isLoading){
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+        builder: (context, provider, child) {
+          if (provider.isLoading) {
+            return const Center(child: CircularProgressIndicator());
           }
 
-          if(provider.errorMessage.isNotEmpty){
+          if (provider.errorMessage.isNotEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.error_outline,
-                    color: Colors.red,
-                    size: 64,
-                  ),
+                  Icon(Icons.error_outline, color: Colors.red, size: 64),
                   SizedBox(height: 16),
                   Text(
                     provider.errorMessage,
@@ -52,16 +45,13 @@ class ListSurahScreen extends StatelessWidget {
             );
           }
 
-          if(provider.surahList.isEmpty){
-            return Center(
-              child: Text('Tidak ada data surah'),
-            );
+          if (provider.surahList.isEmpty) {
+            return Center(child: Text('Tidak ada data surah'));
           }
 
-          
           return ListView.builder(
             itemCount: provider.surahList.length,
-            itemBuilder: (context, index){
+            itemBuilder: (context, index) {
               Surah surah = provider.surahList[index];
               return Card(
                 margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -84,21 +74,24 @@ class ListSurahScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  title: Text(surah.nama, style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  title: Text(
+                    surah.nama,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
 
-                  subtitle: Text('${surah.namaLatin}. ${surah.jumlahAyat} Ayat. ${surah.tempatTurun} . ${surah.arti}',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                  subtitle: Text(
+                    '${surah.namaLatin}. ${surah.jumlahAyat} Ayat. ${surah.tempatTurun} . ${surah.arti}',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   trailing: Icon(Icons.arrow_forward_ios),
-                  onTap: (){
+                  onTap: () {
                     Navigator.pushNamed(
                       context,
-                      '/detail-surah',
+                      '/surah-detail',
                       arguments: surah.nomor,
                     );
                   },
